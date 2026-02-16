@@ -6,6 +6,17 @@ if (process.env.NODE_ENV !== "production") {
   dotenv.config();
 }
 
+// DEBUG: Mostrar TODAS as env vars disponíveis (mascarando valores sensíveis)
+console.log("🔍 === DEBUG ENV VARS ===");
+console.log("🔍 NODE_ENV:", process.env.NODE_ENV);
+console.log("🔍 JWT_SECRET existe?", !!process.env.JWT_SECRET);
+console.log("🔍 JWT_SECRET valor (se existe):", process.env.JWT_SECRET?.substring(0, 15) + "...");
+console.log("🔍 JWT_REFRESH_SECRET existe?", !!process.env.JWT_REFRESH_SECRET);
+console.log("🔍 Todas as env vars:", Object.keys(process.env).filter(k => 
+  k.includes('JWT') || k.includes('NODE_ENV') || k.includes('GITHUB') || k.includes('CORS')
+).join(", "));
+console.log("🔍 === FIM DEBUG ===");
+
 const envSchema = z.object({
   PORT: z.coerce.number().default(3000),
   NODE_ENV: z.enum(["development", "production", "test"]).default("development"),
