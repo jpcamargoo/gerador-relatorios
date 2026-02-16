@@ -1,0 +1,61 @@
+{
+  "name": "report-automation",
+  "version": "1.0.0",
+  "description": "Gerador de Relatórios Automáticos com IA + Automação",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "concurrently -n api,web -c blue,magenta \"tsx watch src/index.ts\" \"cd web && npx next dev --port 3001\"",
+    "dev:api": "tsx watch src/index.ts",
+    "dev:web": "cd web && npx next dev --port 3001",
+    "build": "tsc",
+    "build:web": "cd web && npm run build",
+    "build:all": "npm run build && npm run build:web",
+    "start": "node dist/index.js",
+    "test": "tsx src/tests/parsers.test.ts && tsx src/tests/pipeline.test.ts && tsx src/tests/db.test.ts && tsx src/tests/auth.test.ts",
+    "test:parsers": "tsx src/tests/parsers.test.ts",
+    "test:pipeline": "tsx src/tests/pipeline.test.ts",
+    "test:db": "tsx src/tests/db.test.ts",
+    "test:auth": "tsx src/tests/auth.test.ts",
+    "lint": "eslint src --ext .ts"
+  },
+  "keywords": [
+    "reports",
+    "ai",
+    "automation",
+    "pdf",
+    "typescript"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.74.0",
+    "bcryptjs": "^3.0.3",
+    "better-sqlite3": "^12.6.2",
+    "cors": "^2.8.6",
+    "dotenv": "^17.2.4",
+    "express": "^5.2.1",
+    "express-rate-limit": "^8.2.1",
+    "helmet": "^8.1.0",
+    "jsonwebtoken": "^9.0.3",
+    "multer": "^2.0.2",
+    "openai": "^6.19.0",
+    "pdfkit": "^0.17.2",
+    "swagger-ui-express": "^5.0.1",
+    "winston": "^3.19.0",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/multer": "^2.0.0",
+    "@types/node": "^25.2.2",
+    "@types/pdfkit": "^0.17.4",
+    "@types/swagger-ui-express": "^4.1.8",
+    "concurrently": "^9.2.1",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
+  }
+}

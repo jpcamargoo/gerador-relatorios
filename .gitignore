@@ -1,0 +1,25 @@
+# Dependências
+node_modules/
+
+# Build
+dist/
+
+# Ambiente
+.env
+
+# Storage e output
+storage/
+output/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
