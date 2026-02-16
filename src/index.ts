@@ -35,6 +35,7 @@ async function main(): Promise<void> {
     standardHeaders: true,
     legacyHeaders: false,
     message: { success: false, error: "Muitas requisições. Tente novamente em 1 minuto." },
+    skip: () => config.NODE_ENV === "test",
     keyGenerator: (req) => {
       // Usar userId como chave quando autenticado, senão IP
       const authHeader = req.headers.authorization;
@@ -45,7 +46,10 @@ async function main(): Promise<void> {
           return `user:${payload.userId}`;
         } catch { /* fallback to IP */ }
       }
-      return req.ip || "unknown";
+      // Fix: Normalizar IPv6 para IPv4 quando possível
+      const ip = req.ip || req.socket.remoteAddress || "unknown";
+      // Converter ::ffff:127.0.0.1 → 127.0.0.1
+      return ip.replace(/^::ffff:/, "");
     },
   });
   app.use("/api", limiter);
