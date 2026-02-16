@@ -1,0 +1,6 @@
+# Nunca fazer deploy desses arquivos
+.env.local
+.env*.local
+*.log
+.DS_Store
+node_modules
