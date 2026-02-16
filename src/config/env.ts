@@ -1,7 +1,10 @@
 import dotenv from "dotenv";
 import { z } from "zod";
 
-dotenv.config();
+// Carregar .env apenas em desenvolvimento
+if (process.env.NODE_ENV !== "production") {
+  dotenv.config();
+}
 
 const envSchema = z.object({
   PORT: z.coerce.number().default(3000),
@@ -42,14 +45,22 @@ if (!parsed.success) {
 
 export const config = parsed.data;
 
+// Debug: Verificar valores carregados (apenas primeiros 10 chars por segurança)
+console.log("🔍 NODE_ENV:", config.NODE_ENV);
+console.log("🔍 JWT_SECRET (início):", config.JWT_SECRET.substring(0, 10) + "...");
+console.log("🔍 JWT_REFRESH_SECRET (início):", config.JWT_REFRESH_SECRET.substring(0, 10) + "...");
+
 // Validações de produção
 if (config.NODE_ENV === "production") {
   if (config.JWT_SECRET.startsWith("dev-")) {
     console.error("❌ JWT_SECRET deve ser alterado em produção!");
+    console.error("   Valor atual:", config.JWT_SECRET);
     process.exit(1);
   }
   if (config.JWT_REFRESH_SECRET.startsWith("dev-")) {
     console.error("❌ JWT_REFRESH_SECRET deve ser alterado em produção!");
+    console.error("   Valor atual:", config.JWT_REFRESH_SECRET);
     process.exit(1);
   }
+  console.log("✅ Validações de produção OK!");
 }
