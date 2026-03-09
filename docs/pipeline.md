@@ -36,7 +36,8 @@ O sistema utiliza três pipelines sequenciais para transformar dados brutos em r
 3. **Recomendações** — sugere ações com prioridade e tarefas específicas
 
 ### Providers suportados:
-- GitHub Models (gpt-4o-mini) — **padrão, gratuito**
+- Google Gemini (gemini-2.0-flash) — **padrão, gratuito**
+- GitHub Models (gpt-4o-mini)
 - OpenAI (GPT-4)
 - Anthropic (Claude)
 - Azure OpenAI

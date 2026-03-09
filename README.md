@@ -8,7 +8,7 @@ Serviço modular que transforma dados brutos (JSON, CSV, texto) em relatórios p
 - Upload de dados (drag-and-drop, até 10MB)
 - Parsing automático de CSV, JSON e texto
 - Análise estatística (numérica e categórica)
-- Geração de insights via IA (GitHub Models / gpt-4o-mini)
+- Geração de insights via IA (Google Gemini / gemini-2.0-flash)
 - Resumo executivo e recomendações
 - Exportação para PDF (PDFKit, A4)
 - Progresso em tempo real via SSE
@@ -44,7 +44,7 @@ Serviço modular que transforma dados brutos (JSON, CSV, texto) em relatórios p
 │   (Frontend)      │                   │  (API Backend)    │
 │                   │                   │                   │
 │  - React 19       │                   │  - Pipelines      │
-│  - Tailwind CSS 4 │                   │  - IA (GPT-4o)    │
+│  - Tailwind CSS 4 │                   │  - IA (Gemini)    │
 │  - recharts       │                   │  - PDFKit         │
 │  - AuthContext    │                   │  - JWT + bcrypt   │
 │  - Sonner         │                   │  - SQLite (WAL)   │
@@ -57,7 +57,7 @@ Serviço modular que transforma dados brutos (JSON, CSV, texto) em relatórios p
 ### Pré-requisitos
 
 - Node.js 20+
-- Token do GitHub (gratuito) — [gerar aqui](https://github.com/settings/tokens)
+- API Key do Google Gemini (gratuita) — [gerar aqui](https://aistudio.google.com/apikey)
 
 ### Instalação
 
@@ -73,7 +73,7 @@ cd web && npm install && cd ..
 
 # Configurar ambiente
 cp .env.example .env
-# Editar .env com seu GITHUB_TOKEN
+# Editar .env com sua GEMINI_API_KEY
 ```
 
 ### Desenvolvimento
@@ -183,7 +183,7 @@ curl -X POST http://localhost:3000/api/analyze \
 │   │   ├── generateInsights.ts # 3 prompts de IA
 │   │   └── buildPDF.ts         # Montagem do PDF
 │   ├── services/
-│   │   ├── aiClient.ts         # Multi-provider (GitHub/OpenAI/Anthropic/Azure)
+│   │   ├── aiClient.ts         # Multi-provider (Gemini/GitHub/OpenAI/Anthropic/Azure)
 │   │   ├── authService.ts      # Register, login, refresh, verify (bcrypt + JWT)
 │   │   ├── dbService.ts        # SQLite CRUD (users + history + cache)
 │   │   ├── pdfService.ts       # PDFKit A4
@@ -225,9 +225,9 @@ PORT=3000
 NODE_ENV=development
 
 # IA
-AI_PROVIDER=github
-GITHUB_TOKEN=ghp_your_token_here
-GITHUB_MODEL=gpt-4o-mini
+AI_PROVIDER=gemini
+GEMINI_API_KEY=your-gemini-api-key-here
+GEMINI_MODEL=gemini-2.0-flash
 
 # JWT
 JWT_SECRET=troque-em-producao
@@ -239,14 +239,14 @@ JWT_REFRESH_EXPIRES_IN=7d
 CORS_ORIGIN=*  # Em produção: https://meusite.com
 ```
 
-Providers de IA suportados: `github` (grátis), `openai`, `anthropic`, `azure`.
+Providers de IA suportados: `gemini` (grátis, padrão), `github`, `openai`, `anthropic`, `azure`.
 
 ## Tecnologias
 
 | Camada | Stack |
 |--------|-------|
 | Backend | Node.js, TypeScript, Express 5, Zod |
-| IA | GitHub Models (gpt-4o-mini), OpenAI SDK |
+| IA | Google Gemini (gemini-2.0-flash), OpenAI SDK, Anthropic SDK |
 | Banco | SQLite (better-sqlite3, WAL mode) |
 | Auth | JWT (jsonwebtoken) + bcrypt (bcryptjs) |
 | PDF | PDFKit |
@@ -292,7 +292,8 @@ Arquitetura de produção: **Frontend na Vercel** + **Backend no Railway**.
    | `NODE_ENV` | `production` |
    | `JWT_SECRET` | Secret forte (mín. 32 chars) |
    | `JWT_REFRESH_SECRET` | Outro secret forte |
-   | `GITHUB_TOKEN` | `ghp_...` (seu token) |
+   | `AI_PROVIDER` | `gemini` |
+   | `GEMINI_API_KEY` | Sua chave da API Gemini |
    | `CORS_ORIGIN` | `https://seu-app.vercel.app` |
 
 5. **Add Volume** → mount path: `/app/storage` (persiste o SQLite)
@@ -327,7 +328,8 @@ cp .env.example .env
 #   NODE_ENV=production
 #   JWT_SECRET=<secret-forte-32-chars>
 #   JWT_REFRESH_SECRET=<outro-secret-forte>
-#   GITHUB_TOKEN=ghp_...
+#   AI_PROVIDER=gemini
+#   GEMINI_API_KEY=your-gemini-api-key
 #   CORS_ORIGIN=https://meusite.com
 
 # 2. Build e start
@@ -368,7 +370,7 @@ docker compose up -d --build
 | `NODE_ENV` | `production` |
 | `JWT_SECRET` | Secret forte (mín. 32 chars) — app **não inicia** com default |
 | `JWT_REFRESH_SECRET` | Secret forte diferente do JWT_SECRET |
-| `GITHUB_TOKEN` | Token do GitHub para IA |
+| `GEMINI_API_KEY` | Chave da API do Google Gemini |
 | `CORS_ORIGIN` | URL do frontend (ex: `https://meusite.com`) |
 
 ### Checklist de Produção
