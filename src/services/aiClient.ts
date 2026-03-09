@@ -1,14 +1,16 @@
 import OpenAI from "openai";
 import Anthropic from "@anthropic-ai/sdk";
+import { GoogleGenerativeAI, type GenerativeModel } from "@google/generative-ai";
 import { config } from "../config/env";
 
 /**
- * Cliente de IA abstrato que suporta OpenAI, Anthropic, Azure OpenAI e GitHub Models.
+ * Cliente de IA abstrato que suporta OpenAI, Anthropic, Azure OpenAI, GitHub Models e Google Gemini.
  */
 class AIClient {
   private provider: string;
   private openai?: OpenAI;
   private anthropic?: Anthropic;
+  private geminiModel?: GenerativeModel;
 
   constructor() {
     this.provider = config.AI_PROVIDER;
@@ -57,6 +59,16 @@ class AIClient {
           defaultHeaders: { "api-key": config.AZURE_OPENAI_API_KEY },
         });
         break;
+
+      case "gemini":
+        if (!config.GEMINI_API_KEY) {
+          console.warn("⚠️  GEMINI_API_KEY não configurada. IA desativada.");
+          return;
+        }
+        const genAI = new GoogleGenerativeAI(config.GEMINI_API_KEY);
+        this.geminiModel = genAI.getGenerativeModel({ model: config.GEMINI_MODEL });
+        console.log(`✅ Google Gemini configurado (modelo: ${config.GEMINI_MODEL})`);
+        break;
     }
   }
 
@@ -72,6 +84,8 @@ class AIClient {
           return await this.chatOpenAI(prompt);
         case "anthropic":
           return await this.chatAnthropic(prompt);
+        case "gemini":
+          return await this.chatGemini(prompt);
         default:
           return this.fallbackResponse(prompt);
       }
@@ -122,12 +136,24 @@ class AIClient {
     return block.type === "text" ? block.text : "";
   }
 
+  private async chatGemini(prompt: string): Promise<string> {
+    if (!this.geminiModel) return this.fallbackResponse(prompt);
+
+    const fullPrompt =
+      "Você é um analista de dados especializado em gerar insights e recomendações. Responda sempre de forma estruturada e profissional.\n\n" +
+      prompt;
+
+    const result = await this.geminiModel.generateContent(fullPrompt);
+    const response = result.response;
+    return response.text() ?? "";
+  }
+
   private fallbackResponse(_prompt: string): string {
     return JSON.stringify([
       {
         title: "Análise automática (sem IA)",
         description:
-          "A IA não está configurada. Configure OPENAI_API_KEY, ANTHROPIC_API_KEY ou Azure OpenAI para obter insights inteligentes.",
+          "A IA não está configurada. Configure OPENAI_API_KEY, ANTHROPIC_API_KEY, GEMINI_API_KEY ou Azure OpenAI para obter insights inteligentes.",
         importance: "medium",
         category: "configuração",
       },

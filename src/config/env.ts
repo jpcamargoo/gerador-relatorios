@@ -11,7 +11,7 @@ const envSchema = z.object({
   NODE_ENV: z.enum(["development", "production", "test"]).default("development"),
 
   // AI Provider
-  AI_PROVIDER: z.enum(["openai", "anthropic", "azure", "github"]).default("github"),
+  AI_PROVIDER: z.enum(["openai", "anthropic", "azure", "github", "gemini"]).default("github"),
   OPENAI_API_KEY: z.string().optional(),
   ANTHROPIC_API_KEY: z.string().optional(),
   AZURE_OPENAI_API_KEY: z.string().optional(),
@@ -19,6 +19,8 @@ const envSchema = z.object({
   AZURE_OPENAI_DEPLOYMENT: z.string().optional(),
   GITHUB_TOKEN: z.string().optional(),
   GITHUB_MODEL: z.string().default("gpt-4o-mini"),
+  GEMINI_API_KEY: z.string().optional(),
+  GEMINI_MODEL: z.string().default("gemini-2.0-flash"),
 
   // JWT
   JWT_SECRET: z.string().default("dev-jwt-secret-change-in-production"),
