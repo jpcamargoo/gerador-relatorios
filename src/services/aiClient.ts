@@ -90,7 +90,8 @@ class AIClient {
           return this.fallbackResponse(prompt);
       }
     } catch (error) {
-      console.error("Erro na chamada de IA:", error);
+      const errMsg = error instanceof Error ? error.message : String(error);
+      console.error(`❌ Erro na chamada de IA (${this.provider}):`, errMsg);
       return this.fallbackResponse(prompt);
     }
   }
