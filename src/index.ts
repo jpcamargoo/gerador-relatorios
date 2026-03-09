@@ -36,8 +36,8 @@ async function main(): Promise<void> {
     legacyHeaders: false,
     message: { success: false, error: "Muitas requisições. Tente novamente em 1 minuto." },
     skip: () => config.NODE_ENV === "test",
-    // Desabilitar validação de IPv6 (fix para containers sem suporte IPv6)
-    validate: { ip: false, trustProxy: false },
+    // Desabilitar validações (fix ERR_ERL_KEY_GEN_IPV6 em containers sem IPv6)
+    validate: false,
     keyGenerator: (req) => {
       // Usar userId como chave quando autenticado, senão IP
       const authHeader = req.headers.authorization;
